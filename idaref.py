@@ -49,10 +49,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
                     if(self.do_auto):
                         self.update()
 
-                    return 1000
+                    return 200
 
             if('register_timer' in dir(idaapi)):
-                idaapi.register_timer(1000, update)
+                idaapi.register_timer(200, update)
 
                 self.is_loaded = True
             else:
@@ -70,7 +70,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
             idaapi.close_tform(window, 0)
 
     def findManuals(self):
-        doc_opts = glob.glob(self.base_path + os.sep + "*.sql")
+        doc_opts = glob.glob(self.base_path + os.sep + "archs" + os.sep + "*.sql")
 
         if(len(doc_opts) == 0):
             Warning("Couldn't find any databases in " + path)
@@ -113,7 +113,7 @@ class InstructionReference(idaapi.simplecustviewer_t):
         self.arch = name
 
         path = self.base_path
-        dbpath = path + os.sep + name + ".sql"
+        dbpath = path + os.sep + "archs" + os.sep + name + ".sql"
 
         if(not os.path.isfile(dbpath)):
             print "Manual not found for architecture: %s" % name
@@ -193,7 +193,10 @@ class InstructionReference(idaapi.simplecustviewer_t):
             self.last_inst = inst
         
         self.ClearLines()
-        
+
+        if(inst not in self.inst_map):
+            inst = inst.upper()
+
         if(inst in self.inst_map):
             text = self.inst_map[inst]
 
